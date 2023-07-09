@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Decode CSR</title>
+    </head>
+    <style>
+        html {
+            display: table;
+            margin: auto;
+        }
+        body {
+            display: table-cell;
+            vertical-align: middle;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        h1 {
+            font-size: 1.5em;
+        }
+        textarea {
+            width: 95vw;
+            height: 200px;
+        }
+        button {
+            padding: 10px;
+            font-size: 1em;
+        }
+        pre {
+            background-color: #eee;
+            width:95vw;
+            padding: 10px;
+            overflow: scroll;
+        }
+    </style>
+    <body>
+        <h1>Decode CSR</h1>
+        
+        <h3>Enter Valid PEM CSR</h3>
+        <p>
+            <textarea id="csr"></textarea>
+        </p>
+        <p>
+            <button id="decode" onClick="decode()">Decode</button>
+        </p>
+        <h3>API Output</h3>
+        <p>
+            <pre id="output"></pre>
+        </p>
+    </body>
+    <script>
+        function decode() {
+            var i = document.getElementById('csr').value
+            
+            fetch('https://localhost:8443/decode_csr', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({csr: i})
+            }).then(function(res){
+                return res.text()
+            }).then(function(res){
+                res = JSON.parse(res)
+                document.getElementById('output').textContent = JSON.stringify(res, undefined, 2)
+            }).catch(function(err){
+                alert(err)
+            })
+        }
+    </script>
+</html>
