@@ -1,9 +1,83 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Decode CSR API Documentation</title>
-    </head>
-    <body>
-        HI!
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation for CSR Decoder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        code {
+            background-color: #f2f2f2;
+            padding: 2px 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <h1>Documentation for CSR Decoder</h1>
+
+    <h2>Overview</h2>
+    <p>This is a simple Express.js server application that serves to decode Certificate Signing Requests (CSR). The decoding happens in PEM format, where it returns the public key, key size, and the attributes of the CSR.</p>
+
+    <h2>Setup</h2>
+    <p>You need to have Node.js and npm (Node package manager) installed to set up and run this project.</p>
+    <ol>
+        <li>Clone or download the project to your local machine.</li>
+        <li>Install the dependencies by running the following command in your terminal:
+            <code>npm install</code>
+        </li>
+        <li>The app requires an SSL certificate and key to create an HTTPS server. Place your server certificate (server.crt) and private key (key.pem) in the ./certstore/ directory.</li>
+        <li>Create a .env file in the root directory of your project. Add environment-specific variables on new lines in the form of NAME=VALUE. For example, you can specify the port number here: PORT=8443. If the port is not provided, the server will listen on port 443 by default.</li>
+    </ol>
+
+    <h2>Starting the Server</h2>
+    <p>To start the server, navigate to the project directory in your terminal and type:
+        <code>node app.js</code>
+    </p>
+    <p>The server will start, and you will see a console message like:
+        <code>HTTPS Server is listening on port 8443</code>
+    </p>
+
+    <h2>Endpoints</h2>
+    <h3>GET '/'</h3>
+    <p>Redirects to the '/decode_csr' endpoint.</p>
+
+    <h3>GET '/decode_csr'</h3>
+    <p>Serves the 'decode_csr.html' webpage. You can use this webpage to send CSRs to the server.</p>
+
+    <h3>GET '/decode_csr/docs'</h3>
+    <p>Serves the 'decode_csr_docs.html' webpage. This webpage contains the documentation for using this API.</p>
+
+    <h3>POST '/decode_csr'</h3>
+    <p>This endpoint accepts a JSON body with a csr property that should contain a PEM-encoded CSR.</p>
+    <p>Example request body:</p>
+    <code>
+    {
+      "csr": "-----BEGIN NEW CERTIFICATE REQUEST-----...-----END NEW CERTIFICATE REQUEST-----"
+    }
+    </code>
+    <p>If the CSR is valid, this endpoint will return a JSON object containing the following properties:</p>
+    <ul>
+        <li>publicKey: PEM-encoded public key extracted from the CSR.</li>
+        <li>keySize: Size of the public key in bits.</li>
+        <li>attributes: List of attributes from the CSR's subject field. Each attribute is represented as an object with name and value properties.</li>
+        <li>attributes_extended: List of extended attributes from the CSR. Each attribute is represented as an object with type and value properties.</li>
+    </ul>
+    <p>If the CSR is not provided or is not valid, an error message will be returned.</p>
+
+    <h2>Dependencies</h2>
+    <ul>
+        <li>express: Web server framework.</li>
+        <li>node-forge: A native implementation of Transport Layer Security (TLS) in JavaScript. Used for CSR decoding.</li>
+        <li>body-parser: Middleware for parsing incoming request bodies.</li>
+        <li>dotenv: Module to load environment variables from a .env file.</li>
+        <li>https: Module to create HTTPS server.</li>
+        <li>fs: File System node module for reading SSL certificate and private key.</li>
+    </ul>
+
+    <h2>Error Handling</h2>
+    <p>The application includes basic error handling. If an error is thrown during the CSR decoding process, the error message will be sent in the response body under the error property with a status code of 500. If no CSR is provided, or the provided CSR is not in a valid PEM format, the corresponding error message will be sent with a status code of 400.</p>
+</body>
 </html>
